@@ -1,6 +1,9 @@
+import os
+
 import numpy as np
 from tqdm import tqdm
 import pandas as pd
+import create_databases
 
 def find_timestamp_extremum(df, df_lower_timeframe):
     """
@@ -46,13 +49,15 @@ def find_timestamp_extremum(df, df_lower_timeframe):
 
     return df
 
+print(os.getcwd())
 
-df_low_tf = pd.read_csv("FixTimeBars/AUDUSD_30M_Admiral.csv", index_col="time", parse_dates=True)
-df_high_tf = pd.read_csv("FixTimeBars/AUDUSD_4H_Admiral.csv", index_col="time", parse_dates=True)
+for symbol in create_databases.symbol_array:
+    symbol_name = create_databases.save_path
+    df_low_tf = pd.read_csv("FixTimeBars/SPDR_DJ_Ind-M30.csv", index_col="time", parse_dates=True)
+    df_high_tf = pd.read_csv("FixTimeBars/SPDR_DJ_Ind-H4.csv", index_col="time", parse_dates=True)
+    df = find_timestamp_extremum(df_high_tf, df_low_tf)
 
-df = find_timestamp_extremum(df_high_tf, df_low_tf)
-
-print(df[["high_time", "low_time"]])
-df.to_csv("FixTimeBars/AUDUSD_4H_Admiral_READY.csv")
+    print(df[["high_time", "low_time"]])
+    df.to_csv("FixTimeBars/SPDR_DJ_Ind-H4"+"-HighLowTime.csv")
 
 

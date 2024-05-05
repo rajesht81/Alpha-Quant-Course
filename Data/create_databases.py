@@ -4,7 +4,9 @@ import MetaTrader5 as mt5
 import os
 
 # Symbols to extract rates
-symbol_array = ["US500", "US100", "US30"]
+symbol_array = ["SPDR_DJ_Ind._Avg._(DIA.P).a"]
+symbol_name=""
+save_path=""
 
 # Initialize the bounds between MetaTrader 5 and Python
 mt5.initialize()
@@ -20,12 +22,26 @@ timeframe_names = {
     mt5.TIMEFRAME_M1: "M1"
     # Add more constants as needed
 }
+
+# get all symbols
+symbols=mt5.symbols_get()
+print('Symbols: ', len(symbols))
+count=0
+# display the first five ones
+for s in symbols:
+    count+=1
+    #print("{}. {}".format(count,s))
+    #if count==5: break
+    if s.name in "SPDR_DJ_Ind._Avg._(DIA.P).a":
+        symbol_name = s.name[:s.name.find(".")]
+
 def get_rates(symbol, number_of_data=10_000, timeframe=mt5.TIMEFRAME_D1):
     # Compute now date
     from_date = datetime.now()
 
     # Extract n rates before now
     rates = mt5.copy_rates_from(symbol, timeframe, from_date, number_of_data)
+
 
     # Transform array into a DataFrame
     df_rates = pd.DataFrame(rates)
@@ -54,10 +70,10 @@ for symbol in symbol_array:
 
 
 #input("Write the path to store the file if you want to (if not, just press enter):")
-        save_path = symbol+"-"+value
+        save_path = symbol_name+"-"+value+".csv"
         # If the user provided a filename, save the DataFrame under the "Data" directory
         if save_path:
-            data_dir = "Data"
+            data_dir = "FixTimeBars"
             if not os.path.exists(data_dir):
                 os.makedirs(data_dir)
 
